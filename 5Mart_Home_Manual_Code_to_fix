@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #949B96;
+            --primary-dark: #7b817c;
+            --primary-light: #b5bbb6;
+            --primary-very-light: #e6e8e7;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .sidebar {
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+        
+        .content {
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+        
+        .section-content {
+            display: none;
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        #search-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f3f4f6;
+        }
+        
+        body.dark-mode .sidebar {
+            background-color: #2d2d2d;
+            color: #e5e7eb;
+        }
+        
+        body.dark-mode .header {
+            background-color: var(--primary-dark);
+        }
+        
+        body.dark-mode .content {
+            background-color: #1a1a1a;
+        }
+        
+        body.dark-mode .nav-item {
+            color: #e5e7eb;
+        }
+        
+        body.dark-mode .nav-item:hover {
+            background-color: #3d3d3d;
+        }
+        
+        body.dark-mode .nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        body.dark-mode h1, 
+        body.dark-mode h2, 
+        body.dark-mode h3, 
+        body.dark-mode h4,
+        body.dark-mode h5, 
+        body.dark-mode h6 {
+            color: #f3f4f6;
+        }
+        
+        body.dark-mode .bg-white {
+            background-color: #2d2d2d;
+            color: #e5e7eb;
+        }
+        
+        body.dark-mode .text-gray-600,
+        body.dark-mode .text-gray-700,
+        body.dark-mode .text-gray-800 {
+            color: #e5e7eb;
+        }
+        
+        body.dark-mode .primary-card {
+            background-color: #2d2d2d;
+        }
+        
+        body.dark-mode .alert-card {
+            background-color: #3d3d3d;
+            border-color: var(--primary-color);
+        }
+        
+        body.dark-mode .alert-card h3 {
+            color: var(--primary-light);
+        }
+        
+        body.dark-mode footer {
+            background-color: #2d2d2d;
+        }
+
+        /* Print styles */
+        @media print {
+            @page {
+                size: letter;
+                margin: 0.4in;
+            }
+            
+            html, body {
+                width: 8.5in;
+                height: 11in;
+                font-size: 11px;
+                line-height: 1.2;
+                color: black !important;
+                background-color: white !important;
+            }
+            
+            .sidebar, .header, .no-print, footer {
+                display: none !important;
+            }
+            
+            .content {
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                float: none !important;
+                display: block !important;
+                box-shadow: none !important;
+                background-color: white !important;
+            }
+            
+            .section-content {
+                display: block !important;
+                background-color: white !important;
+                color: black !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* First section should start on its own page */
+            #section-cover, #section-1 {
+                page-break-before: always;
+            }
+            
+            /* Allow page breaks inside cards for better space usage */
+            .primary-card {
+                page-break-inside: auto !important;
+                border: 1px solid #ddd !important;
+                background-color: white !important;
+                color: black !important;
+                margin-bottom: 0.1in !important;
+                padding: 0.1in !important;
+            }
+            
+            .alert-card {
+                page-break-inside: auto !important;
+                border-left: 4px solid #949B96 !important;
+                background-color: white !important;
+                color: black !important;
+                margin-bottom: 0.1in !important;
+                padding: 0.1in !important;
+            }
+            
+            /* Main section headings */
+            h1 {
+                page-break-after: avoid;
+                margin-top: 0in !important;
+                margin-bottom: 0.1in !important;
+                font-size: 16px !important;
+            }
+            
+            h2 {
+                page-break-after: avoid;
+                font-size: 14px !important;
+                margin-top: 0.05in !important;
+                margin-bottom: 0.05in !important;
+            }
+            
+            h3 {
+                page-break-after: avoid;
+                font-size: 13px !important;
+                margin-top: 0.05in !important;
+                margin-bottom: 0.05in !important;
+            }
+            
+            h4, h5, h6 {
+                page-break-after: avoid;
+                font-weight: bold !important;
+                margin-top: 0.05in !important;
+                margin-bottom: 0.02in !important;
+            }
+            
+            /* Compact layout for subsections */
+            .mb-6, .mb-4, .mb-3 {
+                margin-bottom: 0.05in !important;
+            }
+            
+            .space-y-2 > * + * {
+                margin-top: 0.02in !important;
+            }
+            
+            /* List handling for print */
+            ol, ul {
+                margin-left: 0.1in !important;
+                padding-left: 0.1in !important;
+                margin-top: 0.02in !important;
+                margin-bottom: 0.02in !important;
+            }
+            
+            li {
+                color: black !important;
+                margin-bottom: 0.01in !important;
+            }
+            
+            /* Improve nested content printing */
+            .ml-4 {
+                margin-left: 0.1in !important;
+            }
+            
+            .ml-5 {
+                margin-left: 0.15in !important;
+            }
+            
+            /* Keep key related content together */
+            h3 + div, h4 + div {
+                page-break-before: avoid;
+            }
+            
+            /* But allow breaks between major sections */
+            h3 + h3, h2 + h2 {
+                page-break-before: auto;
+            }
+            
+            /* Divs can break across pages */
+            div {
+                page-break-inside: auto;
+            }
+            
+            /* Crucial headings stay with at least some content */
+            h2, h3, h4, h5, h6 {
+                orphans: 3;
+                widows: 3;
+            }
+            
+            /* Fix table printing */
+            table {
+                page-break-inside: avoid;
+            }
+            
+            /* Link appearance in print */
+            a {
+                text-decoration: none !important;
+                color: black !important;
+            }
+            
+            /* Reset all background colors for print */
+            * {
+                background-color: white !important;
+                color: black !important;
+            }
+            
+            /* Special text handling */
+            .text-red-600 {
+                color: black !important;
+                font-weight: bold !important;
+            }
+            
+            .text-yellow-600 {
+                color: black !important;
+                font-weight: bold !important;
+            }
+            
+            .text-[#949B96], .text-[#7b817c] {
+                color: black !important;
+                font-weight: bold !important;
+            }
+            
+            /* Handle Required Accounts section better */
+            h3 + div h4:first-child {
+                margin-top: 0 !important;
+            }
+            
+            /* Ensure Required Accounts Section flows properly */
+            #section-1 h3 + div ul {
+                page-break-before: avoid;
+                page-break-inside: auto;
+            }
+            
+            /* Make each major section fill page better */
+            .section-content > div:last-child {
+                min-height: 9.5in;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-[#949B96] text-white p-4 sticky top-0 z-10 header">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-home text-2xl mr-2"></i>
+                <h1 class="text-xl font-bold">Smart Home Manual</h1>
+                <span class="ml-4 text-sm bg-[#7b817c] px-2 py-1 rounded hidden md:inline-block">Home Setup Guide</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="dark-mode-toggle" class="p-2 rounded hover:bg-[#7b817c]">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="print-button" class="p-2 rounded hover:bg-[#7b817c]">
+                    <i class="fas fa-print"></i>
+                </button>
+                <div class="relative hidden md:block">
+                    <input id="search-input" type="text" placeholder="Search manual..." class="px-4 py-1 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#949B96]">
+                    <div id="search-results" class="absolute w-full mt-1 bg-white text-gray-800 rounded shadow-lg z-20 hidden"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="flex container mx-auto">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar w-64 bg-white p-4 shadow hidden md:block">
+            <nav>
+                <ul class="space-y-1">
+                    <li>
+                        <span class="font-bold text-sm text-gray-500 uppercase">Main Sections</span>
+                    </li>
+                    <li>
+                        <a href="#section-cover" class="nav-item block px-4 py-2 rounded hover:bg-gray-100 active" data-section="section-cover">Cover Page</a>
+                    </li>
+                    <li>
+                        <a href="#section-1" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-1">Network Infrastructure</a>
+                    </li>
+                    <li>
+                        <a href="#section-2" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-2">Network Setup</a>
+                    </li>
+                    <li>
+                        <a href="#section-3" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-3">HomeKit Configuration</a>
+                    </li>
+                    <li>
+                        <a href="#section-4" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-4">Philips Hue Configuration</a>
+                    </li>
+                    <li>
+                        <a href="#section-5" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-5">SwitchBot Configuration</a>
+                    </li>
+                    <li>
+                        <a href="#section-6" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-6">Environmental Controls</a>
+                    </li>
+                    <li>
+                        <a href="#section-7" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-7">Scenes & Automation</a>
+                    </li>
+                    <li>
+                        <a href="#section-8" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-8">Security Systems</a>
+                    </li>
+                    <li>
+                        <a href="#section-9" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-9">Testing & Validation</a>
+                    </li>
+                    <li>
+                        <a href="#section-10" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-10">Maintenance</a>
+                    </li>
+                    <li>
+                        <a href="#section-11" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-11">User Guides</a>
+                    </li>
+                    <li>
+                        <a href="#section-12" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-12">Future Expansion</a>
+                    </li>
+                    <li>
+                        <a href="#section-13" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-13">Voice Commands</a>
+                    </li>
+                    <li>
+                        <a href="#section-14" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-14">System Monitoring</a>
+                    </li>
+                    <li>
+                        <a href="#section-15" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="section-15">Documentation</a>
+                    </li>
+                    <li>
+                        <span class="font-bold text-sm text-gray-500 uppercase mt-4 block">Appendices</span>
+                    </li>
+                    <li>
+                        <a href="#appendix-a" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="appendix-a">A: Specifications</a>
+                    </li>
+                    <li>
+                        <a href="#appendix-b" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="appendix-b">B: Implementation Checklist</a>
+                    </li>
+                    <li>
+                        <a href="#appendix-c" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="appendix-c">C: Quick Reference</a>
+                    </li>
+                    <li>
+                        <a href="#appendix-d" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="appendix-d">D: Troubleshooting</a>
+                    </li>
+                    <li>
+                        <a href="#appendix-e" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="appendix-e">E: Glossary</a>
+                    </li>
+                    <li>
+                        <a href="#appendix-f" class="nav-item block px-4 py-2 rounded hover:bg-gray-100" data-section="appendix-f">F: Master Index</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="content flex-1 p-6 bg-gray-50">
+            <!-- Cover Page -->
+            <div id="section-cover" class="section-content active">
+                <div class="text-center mb-12">
+                    <h1 class="text-5xl font-bold text-[#949B96] mb-4">Smart Home Manual</h1>
+                    <h2 class="text-2xl text-gray-600 mb-8">A Comprehensive Guide to Your Home Automation System</h2>
+                    <div class="flex justify-center mb-12">
+                        <div class="w-32 h-32 rounded-full bg-[#949B96] flex items-center justify-center text-white">
+                            <i class="fas fa-home text-6xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-12">This manual provides detailed instructions for setting up, configuring, and maintaining your smart home system using Apple HomeKit, Philips Hue, SwitchBot, and other compatible technologies.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+                        <div class="primary-card bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-[#949B96] text-4xl mb-4">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Network Infrastructure</h3>
+                            <p class="text-gray-600">Reliable foundation for your smart home ecosystem</p>
+                        </div>
+                        <div class="primary-card bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-[#949B96] text-4xl mb-4">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Lighting & Environment</h3>
+                            <p class="text-gray-600">Intelligent lighting and climate control systems</p>
+                        </div>
+                        <div class="primary-card bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-[#949B96] text-4xl mb-4">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Security & Automation</h3>
+                            <p class="text-gray-600">Secure access control and intelligent automation</p>
+                        </div>
+                    </div>
+                    <div class="alert-card bg-[#e6e8e7] p-6 rounded-lg max-w-3xl mx-auto border-l-4 border-[#949B96]">
+                        <h3 class="text-xl font-semibold text-[#7b817c] mb-2">How to Use This Manual</h3>
+                        <p class="text-gray-700 mb-4">Navigate through the sections using the sidebar menu. Each section contains detailed information about specific aspects of your smart home system. Use the search function to quickly find information on specific topics.</p>
+                        <p class="text-gray-700">For quick reference, appendices provide specifications, checklists, troubleshooting guides, and glossary terms.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 1: System Architecture & Prerequisites -->
+            <div id="section-1" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 1: SYSTEM ARCHITECTURE & PREREQUISITES</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">1.1 Network Infrastructure Foundation</h2>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">ISP Configuration</h3>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Xfinity Gateway:</h4>
+                            <div class="ml-4 mb-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Initial Setup:</h5>
+                                <p class="text-red-600 font-medium mb-2">CRITICAL: Configure gateway properly before AmpliFi</p>
+                                <div class="ml-4 mb-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Bridge Mode Configuration:</h5>
+                                    <ol class="list-decimal ml-5 space-y-2">
+                                        <li>
+                                            <span class="font-medium">Access Gateway Settings:</span>
+                                            <ul class="list-disc ml-5 mt-1">
+                                                <li>Connect to gateway WiFi</li>
+                                                <li>Navigate to 10.0.0.1</li>
+                                                <li>Login with admin credentials</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <span class="font-medium">Enable Bridge Mode:</span>
+                                            <div class="ml-5 mt-1">
+                                                <span class="font-medium">Steps:</span>
+                                                <ul class="list-disc ml-5 mt-1">
+                                                    <li>Select "Advanced Settings"</li>
+                                                    <li>Choose "Gateway Mode"</li>
+                                                    <li>Enable "Bridge Mode"</li>
+                                                    <li>Confirm changes</li>
+                                                </ul>
+                                                <p class="text-yellow-600 font-medium mt-1">WARNING: This will disable gateway WiFi</p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="font-medium">Verify Bridge Mode:</span>
+                                            <ul class="list-disc ml-5 mt-1">
+                                                <li>Gateway LED status</li>
+                                                <li>Connection active</li>
+                                                <li>Single IP assignment</li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class="ml-4 mb-4">
+                                    <h5 class="font-medium text-gray-700 mb-2">Physical Connection:</h5>
+                                    <div class="ml-4">
+                                        <h6 class="font-medium text-gray-600 mb-1">Cable Routing:</h6>
+                                        <ol class="list-decimal ml-5 space-y-2">
+                                            <li>
+                                                <span class="font-medium">Coaxial Connection:</span>
+                                                <ul class="list-disc ml-5 mt-1">
+                                                    <li>Verify signal strength</li>
+                                                    <li>Clean connection</li>
+                                                    <li>Proper grounding</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <span class="font-medium">LAN Connection:</span>
+                                                <div class="ml-5 mt-1">
+                                                    <span class="font-medium">Primary Setup:</span>
+                                                    <ul class="list-disc ml-5 mt-1">
+                                                        <li>Use LAN Port 1</li>
+                                                        <li>CAT6 or better cable</li>
+                                                        <li>Direct to AmpliFi Alien</li>
+                                                        <li>Verify connection speed</li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">Network Requirements</h3>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Internet Connection:</h4>
+                            <div class="ml-4 mb-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Minimum Specifications:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>Download: 300Mbps+</li>
+                                    <li>Upload: 20Mbps+</li>
+                                    <li>Latency: &lt;20ms</li>
+                                    <li>Jitter: &lt;5ms</li>
+                                </ul>
+                                <h5 class="font-medium text-gray-700 mb-2 mt-3">Recommended:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>Download: 500Mbps+</li>
+                                    <li>Upload: 50Mbps+</li>
+                                    <li>Latency: &lt;10ms</li>
+                                    <li>Jitter: &lt;2ms</li>
+                                </ul>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Hardware:</h4>
+                            <div class="ml-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Primary Router:</h5>
+                                <ul class="list-disc ml-5 mb-3">
+                                    <li>Model: AmpliFi Alien</li>
+                                    <li>Location: Main Floor</li>
+                                    <li>Requirements:
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Elevated position</li>
+                                            <li>Central placement</li>
+                                            <li>Power backup recommended</li>
+                                            <li>Ethernet accessibility</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <h5 class="font-medium text-gray-700 mb-2">Mesh Point:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>Model: AmpliFi Alien</li>
+                                    <li>Location: Owl's Den</li>
+                                    <li>Requirements:
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Clear line of sight to main router</li>
+                                            <li>20-50ft separation</li>
+                                            <li>Elevated position</li>
+                                            <li>Power stability</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">Required Accounts</h3>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Primary:</h4>
+                            <ul class="list-disc ml-5 mb-3">
+                                <li>Apple ID with iCloud (HomeKit)</li>
+                                <li>Philips Hue Account</li>
+                                <li>SwitchBot Account</li>
+                                <li>Ecobee Account</li>
+                                <li>Dyson Account</li>
+                            </ul>
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Account Security:</h4>
+                            <ul class="list-disc ml-5">
+                                <li>2FA enabled on all accounts</li>
+                                <li>Recovery methods configured</li>
+                                <li>Backup access documented</li>
+                                <li>Password manager recommended</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">1.2 Network Architecture</h2>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">Network Topology</h3>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Gateway Layer:</h4>
+                            <div class="ml-4 mb-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Xfinity Gateway:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>Role: Bridge Mode</li>
+                                    <li>Function: Modem only</li>
+                                    <li>Connection: Coaxial in, Ethernet out</li>
+                                    <li>IP Assignment: None (bridge)</li>
+                                </ul>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Primary Network:</h4>
+                            <div class="ml-4 mb-4">
+                                <h5 class="font-medium text-gray-700 mb-2">AmpliFi Alien Router:</h5>
+                                <ul class="list-disc ml-5 mb-3">
+                                    <li>Connection: Gateway LAN → WAN</li>
+                                    <li>IP Range: 192.168.1.1/24</li>
+                                    <li>DHCP Management:
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Start: 192.168.1.100</li>
+                                            <li>End: 192.168.1.250</li>
+                                            <li>Reserved: .1 to .99</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <h5 class="font-medium text-gray-700 mb-2">Mesh Extension:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>AmpliFi Mesh Point:
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Connection: Wireless backhaul</li>
+                                            <li>Coverage: Owl's Den</li>
+                                            <li>Optimization: Dedicated backhaul</li>
+                                            <li>Position: Strategic for gaming</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">Network Segmentation</h3>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Primary Network (5GHz):</h4>
+                            <div class="ml-4 mb-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Usage:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>Gaming devices</li>
+                                    <li>Streaming equipment</li>
+                                    <li>Primary computing</li>
+                                </ul>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">IoT Network (2.4GHz):</h4>
+                            <div class="ml-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Usage:</h5>
+                                <ul class="list-disc ml-5">
+                                    <li>Smart home devices</li>
+                                    <li>Sensors</li>
+                                    <li>Environmental controls</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Detailed Network Setup Procedures -->
+            <div id="section-2" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 2: DETAILED NETWORK SETUP PROCEDURES</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">2.1 Xfinity Gateway Configuration</h2>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">Initial Gateway Setup</h3>
+                        <div class="ml-4 mb-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Pre-Configuration Steps:</h4>
+                            <div class="ml-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Documentation:</h5>
+                                <ol class="list-decimal ml-5 space-y-2">
+                                    <li>
+                                        <span class="font-medium">Record Current Settings:</span>
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Gateway IP (typically 10.0.0.1)</li>
+                                            <li>Admin credentials</li>
+                                            <li>Connected devices</li>
+                                            <li>Current WiFi settings</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <span class="font-medium">Backup Configuration:</span>
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Screenshot settings</li>
+                                            <li>Document custom configurations</li>
+                                            <li>Note port forwarding if any</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <!-- Additional content for section 2 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: HomeKit Configuration -->
+            <div id="section-3" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 3: HOMEKIT CONFIGURATION</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">3.1 HomeKit Infrastructure Setup</h2>
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-[#949B96] mb-3">Home Hub Configuration</h3>
+                        <div class="ml-4 mb-4">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Home Hub Requirements:</h4>
+                            <div class="ml-4">
+                                <h5 class="font-medium text-gray-700 mb-2">Primary Hub Selection:</h5>
+                                <ul class="list-disc ml-5 mb-3">
+                                    <li>Device: Apple TV 4K (5hadow Wing)</li>
+                                    <li>Configuration Requirements:
+                                        <ul class="list-disc ml-5 mt-1">
+                                            <li>Latest tvOS</li>
+                                            <li>Logged into iCloud</li>
+                                            <li>Two-factor authentication</li>
+                                            <li>Home access enabled</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <!-- Additional content for section 3 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sections 4-15 would follow the same structure -->
+            <!-- For brevity, we'll include just the headers for these sections -->
+
+            <!-- Section 4: Philips Hue Configuration -->
+            <div id="section-4" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 4: PHILIPS HUE CONFIGURATION & INTEGRATION</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">4.1 Hue Bridge Setup & Infrastructure</h2>
+                    <!-- Content for section 4 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 5: SwitchBot Configuration -->
+            <div id="section-5" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 5: SWITCHBOT CONFIGURATION & INTEGRATION</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">5.1 SwitchBot Hub Installation</h2>
+                    <!-- Content for section 5 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 6: Environmental Controls -->
+            <div id="section-6" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 6: ENVIRONMENTAL CONTROL SYSTEMS</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">6.1 Ecobee Thermostat Configuration</h2>
+                    <!-- Content for section 6 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 7: Advanced Scene Creation & Complex Automation -->
+            <div id="section-7" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 7: ADVANCED SCENE CREATION & COMPLEX AUTOMATION</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">7.1 Core Scene Development</h2>
+                    <!-- Content for section 7 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 8: Security Systems Integration -->
+            <div id="section-8" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 8: SECURITY SYSTEMS INTEGRATION</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">8.1 Level Lock Configuration</h2>
+                    <!-- Content for section 8 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 9: Testing and Validation -->
+            <div id="section-9" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 9: TESTING AND VALIDATION PROCEDURES</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">9.1 System Verification Protocol</h2>
+                    <!-- Content for section 9 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 10: Maintenance and Troubleshooting -->
+            <div id="section-10" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 10: MAINTENANCE AND TROUBLESHOOTING</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">10.1 Preventive Maintenance Schedule</h2>
+                    <!-- Content for section 10 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 11: User Guides and Reference Materials -->
+            <div id="section-11" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 11: USER GUIDES AND REFERENCE MATERIALS</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">11.1 Primary User Guide</h2>
+                    <!-- Content for section 11 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 12: Future Expansion Planning -->
+            <div id="section-12" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 12: FUTURE EXPANSION PLANNING</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">12.1 Planned Enhancements</h2>
+                    <!-- Content for section 12 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 13: Voice Command Structures -->
+            <div id="section-13" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 13: VOICE COMMAND STRUCTURES</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">13.1 Core Voice Command Framework</h2>
+                    <!-- Content for section 13 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 14: System Monitoring and Reporting -->
+            <div id="section-14" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 14: SYSTEM MONITORING AND REPORTING</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">14.1 Ongoing System Monitoring</h2>
+                    <!-- Content for section 14 would go here -->
+                </div>
+            </div>
+
+            <!-- Section 15: Documentation and Backup Procedures -->
+            <div id="section-15" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">SECTION 15: DOCUMENTATION AND BACKUP PROCEDURES</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">15.1 System Documentation</h2>
+                    <!-- Content for section 15 would go here -->
+                </div>
+            </div>
+
+            <!-- Appendix A: Detailed Specifications -->
+            <div id="appendix-a" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">APPENDIX A: DETAILED SPECIFICATIONS</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">A.1 Network Infrastructure Specifications</h2>
+                    <!-- Content for appendix A would go here -->
+                </div>
+            </div>
+
+            <!-- Appendix B: Implementation Checklist -->
+            <div id="appendix-b" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">APPENDIX B: IMPLEMENTATION CHECKLIST</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">B.1 Pre-Implementation Verification</h2>
+                    <!-- Content for appendix B would go here -->
+                </div>
+            </div>
+
+            <!-- Appendix C: Quick Reference Guides -->
+            <div id="appendix-c" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">APPENDIX C: INDEX AND QUICK REFERENCE GUIDES</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">C.1 Master Component Index</h2>
+                    <!-- Content for appendix C would go here -->
+                </div>
+            </div>
+
+            <!-- Appendix D: Troubleshooting Flowcharts -->
+            <div id="appendix-d" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">APPENDIX D: TROUBLESHOOTING FLOWCHARTS</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">D.1 Network Troubleshooting</h2>
+                    <!-- Content for appendix D would go here -->
+                </div>
+            </div>
+
+            <!-- Appendix E: Glossary of Terms -->
+            <div id="appendix-e" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">APPENDIX E: GLOSSARY OF TERMS</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">E.1 Network Terminology</h2>
+                    <!-- Content for appendix E would go here -->
+                </div>
+            </div>
+
+            <!-- Appendix F: Master Index -->
+            <div id="appendix-f" class="section-content">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">APPENDIX F: MASTER INDEX OF ALL COMPONENTS</h1>
+                <div class="primary-card bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">F.1 Complete Device Inventory</h2>
+                    <!-- Content for appendix F would go here -->
+                </div>
+            </div>
+            
+        </main>
+    </div>
+    
+    <!-- Add JavaScript for functionality -->
+    <script>
+        // Dark mode toggle
+        document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+        
+        // Print functionality
+        document.getElementById('print-button').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(function(navItem) {
+            navItem.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(function(item) {
+                    item.classList.remove('active');
+                });
+                
+                // Add active class to clicked nav item
+                this.classList.add('active');
+                
+                // Hide all section content
+                document.querySelectorAll('.section-content').forEach(function(section) {
+                    section.classList.remove('active');
+                });
+                
+                // Show selected section content
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+        
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const searchResults = document.getElementById('search-results');
+            
+            if (searchTerm.length < 3) {
+                searchResults.classList.add('hidden');
+                return;
+            }
+            
+            // Clear previous results
+            searchResults.innerHTML = '';
+            
+            // Search in all sections (simplified - would need to be expanded)
+            document.querySelectorAll('h1, h2, h3, h4, h5, h6, p').forEach(function(element) {
+                const text = element.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+                    resultItem.textContent = element.textContent;
+                    
+                    // Find the section this element belongs to
+                    let parent = element.parentElement;
+                    while (parent && !parent.classList.contains('section-content')) {
+                        parent = parent.parentElement;
+                    }
+                    
+                    if (parent) {
+                        const sectionId = parent.id;
+                        resultItem.addEventListener('click', function() {
+                            // Navigate to section
+                            document.querySelectorAll('.nav-item').forEach(function(item) {
+                                if (item.getAttribute('data-section') === sectionId) {
+                                    item.click();
+                                    
+                                    // Scroll to element
+                                    setTimeout(function() {
+                                        element.scrollIntoView({behavior: 'smooth'});
+                                    }, 100);
+                                }
+                            });
+                            
+                            // Hide search results
+                            searchResults.classList.add('hidden');
+                            document.getElementById('search-input').value = '';
+                        });
+                        
+                        searchResults.appendChild(resultItem);
+                    }
+                }
+            });
+            
+            if (searchResults.children.length > 0) {
+                searchResults.classList.remove('hidden');
+            } else {
+                searchResults.classList.add('hidden');
+            }
+        });
+        
+        // Hide search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#search-input') && !e.target.closest('#search-results')) {
+                document.getElementById('search-results').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
